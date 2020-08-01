@@ -1,0 +1,38 @@
+name: Go
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Set up Go 1.x
+      uses: actions/setup-go@v2
+      id: go
+
+    - name: Check out code into the Go module directory
+      uses: actions/checkout@v2
+
+    - name: Get dependencies and go vet
+      run: |
+        go vet ./...
+
+    - name: Build
+      run: go build -v .
+
+    - name: Test
+      run: go test -coverprofile=coverage.out -v ./...
+
+    - name: Create coverage.html
+      run: go tool cover -html=coverage.out -o coverage.html
+    
+    - uses: actions/upload-artifact@v2
+      with:
+        name: coverage.html
+        path: coverage.html
