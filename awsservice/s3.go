@@ -1,8 +1,6 @@
 package awsservice
 
 import (
-	"strings"
-
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
@@ -27,22 +25,7 @@ func NewS3() S3 {
 	}
 }
 
-// PutObject S3 PutObject Wrapper
-func (s S3) PutObject(filePath string, bucket, string, objectPath string) (*s3.PutObjectOutput, error) {
-	input := &s3.PutObjectInput{
-		Body:   aws.ReadSeekCloser(strings.NewReader(filePath)),
-		Bucket: aws.String(bucket),
-		Key:    aws.String(objectPath),
-	}
-	result, err := s.Client.PutObject(input)
-	if err != nil {
-		return nil, err
-	}
-
-	return result, nil
-}
-
-// SetObjectsLists Set Objects To Tview's List
+// SetObjectList Set Objects To Tview's List
 func (s S3) SetObjectList(objectList *tview.List, bucketsList *tview.List, app *tview.Application) error {
 	objectList.Clear()
 	currentItem := bucketsList.GetCurrentItem()
